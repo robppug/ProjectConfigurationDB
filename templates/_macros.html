@@ -1,0 +1,40 @@
+{# In _macros.html #}
+
+{% import '_options.html' as options %}
+
+{% macro render_dropdown(name, options, selected_value='', include_default=false, default_label="Select", attrs="") %}
+<select name="{{ name }}" {{ attrs|safe }}>
+    {% if include_default %}
+    <option value="">{{ default_label }}</option>
+    {% endif %}
+    {% for value, label in options %}
+    <option value="{{ value }}" {% if value==selected_value %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+</select>
+{% endmacro %}
+
+{% macro render_feature(field, project) %}
+<div class="col" style="min-width: 250px; max-width: 100%;">
+    <div class="card p-3 text-center shadow-sm w-100">
+        <small class="fw-bold d-block mb-2">{{ field.upper() }}</small>
+        <div class="d-flex w-100 justify-content-between gap-1">
+            {% for value, label, btn_class in options.feature %}
+            <input type="radio" class="btn-check" name="{{ field }}" id="{{ field }}_{{ value }}" value="{{ value }}"
+                   {% if project[field]==value %}checked{% endif %}>
+            <label class="btn btn-outline-{{ btn_class }} btn-sm text-center w-100"
+                   for="{{ field }}_{{ value }}">
+                {{ label }}
+            </label>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_multiselect(name, options, selected_values=[]) %}
+<select name="{{ name }}[]" multiple class="form-select">
+    {% for value, label in options %}
+    <option value="{{ value }}" {% if value in selected_values %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+</select>
+{% endmacro %}

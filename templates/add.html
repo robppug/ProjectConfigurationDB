@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Project Configuration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body class="bg-light">
+    {% import '_macros.html' as macro %}
+    {% import '_options.html' as options %}
+    <div class="container py-4">
+        <h1 class="h3 mb-4 text-primary">Add Project Configuration</h1>
+        {% include '_messages.html' %}
+        <form method="POST" novalidate>
+            <!-- Basic Information -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Basic Information</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Project Name:</label>
+                        <input type="text" class="form-control" name="project" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Project Stage:</label>
+                        {{ macro.render_dropdown('project_stage', options.project_stages, '', true, "", 'class="form-select"') }}
+                    </div>
+                    <!-- Optionally remove Last Updated since it may be auto-set -->
+                    <div class="mb-3">
+                        <label class="form-label">Last Updated:</label>
+                        <input type="date" class="form-control" name="last_updated">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cognitive Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Cognitive Features</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field, label in options.cognitive_del %}
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ label }}:</label>
+                            <input type="text" class="form-control" name="{{ field }}">
+                        </div>
+                        {% endfor %}
+                        {% for field, label in options.cognitive_dil %}
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ label }}:</label>
+                            <input type="text" class="form-control" name="{{ field }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Recognition Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Visual Recognition Features</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field, label in options.visual_activity %}
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ label }}:</label>
+                            <input type="text" class="form-control" name="{{ field }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standards Compliance -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Standards Compliance</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for name, label, options in options.standards_compliance %}
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ label }}:</label>
+                            {{ macro.render_dropdown(name, options, '', true, "", 'class="form-select"') }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regulatory Compliance -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Regulatory Compliance</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field, label in options.regulations %}
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ label }}:</label>
+                            <input type="text" class="form-control" name="{{ field }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hardware/Platform -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Hardware/Platform</div>
+                <div class="card-body">
+                    {{ macro.render_multiselect('hardware_platform', options.hardware) }}
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Add Project</button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

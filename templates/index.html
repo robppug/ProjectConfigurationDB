@@ -1,0 +1,667 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[SM] Project Configurations</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body class="bg-light">
+    {% import '_options.html' as options %}
+    {% import '_macros.html' as macro %}
+    <div class="container-fluid px-5 py-4" style="max-width: 95vw;">
+        <!-- Page Title Row -->
+        <div class="mb-3">
+            <h1 class="h3 text-primary mb-0">[SM] Project Configurations</h1>
+        </div>
+
+        <!-- Actions Row (Add New + Gear Cog) -->
+        <div class="d-flex align-items-center mb-3">
+            <a href="{{ url_for('add') }}" class="btn btn-primary me-3">Add New</a>
+            <a href="{{ url_for('settings') }}" class="settings-link" title="Settings">&#9881;</a>
+        </div>
+
+        {% include '_messages.html' %}
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive w-100">
+                    <table class="table table-hover mb-0 w-100">
+                        <thead class="table-primary">
+                            <!-- Main header row with sortable columns -->
+                            <tr id="headerRow">
+                                <th class="sortable" style="width: 40px; white-space: nowrap;">
+                                    # <span class="sort-icon"></span>
+                                </th>
+                                <th class="sortable" style="width: 150px; white-space: nowrap;">
+                                    Project <span class="sort-icon"></span>
+                                </th>
+                                <th class="sortable" style="width: 150px; white-space: nowrap;">
+                                    Stage <span class="sort-icon"></span>
+                                </th>
+                                <th class="sortable" style="width: 200px; white-space: nowrap;">
+                                    Last Updated <span class="sort-icon"></span>
+                                </th>
+                                <th class="sortable" style="width: 800px; white-space: nowrap;">
+                                    Description <span class="sort-icon"></span>
+                                </th>
+                                <th style="width: 150px;">Actions</th>
+                            </tr>
+                            <!-- Filter row -->
+                            <tr>
+                                <th></th>
+                                <th><input type="text" class="form-control form-control-sm column-filter" data-column="1" placeholder="Filter Project"></th>
+                                <th>
+                                    <select id="stageFilter" class="form-control form-control-sm column-filter" data-column="2">
+                                        <option value="">All Stages</option>
+                                        {% for field, stage, btn_class in options.project_stages %}
+                                        <option value="{{ stage }}">{{ stage }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </th>
+                                <th><input type="text" class="form-control form-control-sm column-filter" data-column="3" placeholder="Filter Date"></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in projects %}
+                            <tr class="main-row align-middle cursor-pointer" data-bs-toggle="collapse" data-bs-target="#details-{{ project.id }}">
+                                <td class="fw-semibold">{{ project.id }}</td>
+                                <td>{{ project.project }}</td>
+                                <td>
+                                    <span class="badge bg-{% if project.project_stage == 'ACTIVE' %}success{% elif project.project_stage == 'PLATFORM' %}warning{% elif project.project_stage == 'TLS' %}danger{% elif project.project_stage == 'RFI' %}primary{% elif project.project_stage == 'RFQ' %}secondary{% else %}info{% endif %}">
+                                        {{ project.project_stage or 'N/A' }}
+                                    </span>
+                                </td>
+                                <td>{{ project.last_updated or '-' }}</td>
+                                <td>{{ project.description or '' }}</td>
+                                <td>
+                                    <form action="{{ url_for('delete', id=project.id) }}" method="POST" novalidate>
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                            <!-- DETAIL/ACCORDION ROW (Inline Edit Form) -->
+                            <tr class="detail-row collapse" id="details-{{ project.id }}">
+                                <td colspan="5" class="p-4 bg-white">
+                                    <form action="{{ url_for('edit', id=project.id) }}" method="POST" novalidate>
+                                        <div class="accordion" id="accordion-{{ project.id }}">
+                                            <!-- General Info Accordion -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#general-{{ project.id }}">
+                                                        General Info
+                                                    </button>
+                                                </h2>
+                                                <div id="general-{{ project.id }}" class="accordion-collapse collapse"
+                                                     data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div class="accordion-body">
+                                                        <div class="row">
+                                                            <!-- Project Name -->
+                                                            <div class="col-md-2">
+                                                                <div class="mb-3">
+                                                                    <label class="fw-bold">Project Name:</label>
+                                                                    <input type="text" name="project" class="form-control form-control-sm" value="{{ project.project or '' }}">
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Project Stage Selection -->
+                                                            <div class="col-md-4">
+                                                                <div class="card p-3 text-center shadow-sm w-100">
+                                                                    <small class="fw-bold d-block mb-2">Project Stage</small>
+                                                                    <div class="d-flex flex-wrap justify-content-center gap-2" style="max-width: 100%; overflow: auto;">
+                                                                        {% for field, stage, btn_class in options.project_stages %}
+                                                                        <input type="radio" class="btn-check" name="project_stage" id="project_stage_{{ field }}" value="{{ field }}"
+                                                                               {% if project.project_stage==field %}checked{% endif %}>
+                                                                        <label class="btn btn-outline-{{ btn_class }} btn-sm flex-fill" for="project_stage_{{ field }}">
+                                                                            {{ stage }}
+                                                                        </label>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Project Description -->
+                                                            <div class="col-md-12">
+                                                                <div class="mb-3">
+                                                                    <label class="fw-bold">Description:</label>
+                                                                    <textarea name="project" class="form-control form-control-sm" rows="4">{{ project.description or '' }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Cognitive Features -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#cognitive-{{ project.id }}">
+                                                        Cognitive Features
+                                                    </button>
+                                                </h2>
+                                                <div id="cognitive-{{ project.id }}" class="accordion-collapse collapse"
+                                                     data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div class="accordion-body">
+
+                                                        <!-- Sub-grouped Accordion -->
+                                                        <div class="accordion" id="cognitive-subgroups-{{ project.id }}">
+
+                                                            <!-- Cognitive State -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#cognitive-state-{{ project.id }}">
+                                                                        Cognitive State
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="cognitive-state-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#cognitive-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.cognitive_del %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Drowsiness & Sleep Detection -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#drowsiness-{{ project.id }}">
+                                                                        Drowsiness & Sleep Detection
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="drowsiness-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#cognitive-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.cognitive_dil %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div> <!-- End Sub-Accordion -->
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Visual Recognition Features -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#visual-{{ project.id }}">
+                                                        Visual Recognition Features
+                                                    </button>
+                                                </h2>
+                                                <div id="visual-{{ project.id }}" class="accordion-collapse collapse"
+                                                     data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div class="accordion-body">
+
+                                                        <!-- Sub-grouped Accordion -->
+                                                        <div class="accordion" id="visual-subgroups-{{ project.id }}">
+
+                                                            <!-- Gestures & Activity -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#gestures-{{ project.id }}">
+                                                                        Gestures & Activity
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="gestures-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_activity %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Mouth Activity -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#mouth-{{ project.id }}">
+                                                                        Mouth Activity
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="mouth-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_mouth %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Object Detection -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#object-{{ project.id }}">
+                                                                        Object Detection
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="object-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_object %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!--Driver Attention State-->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#driver-{{ project.id }}">
+                                                                        Driver Attention State
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="driver-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_das %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Face Occlusion Detection (FOD) -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#fod-{{ project.id }}">
+                                                                        Face Occlusion Detection (FOD)
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="fod-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_fod %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Seat Occupancy Detection (SOD) -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#sod-{{ project.id }}">
+                                                                        Seat Occupancy Detection (SOD)
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="sod-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_sod %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Identity & Spoofing Detection -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button"
+                                                                            data-bs-toggle="collapse"
+                                                                            data-bs-target="#identity-{{ project.id }}">
+                                                                        Identity & Spoofing Detection
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="identity-{{ project.id }}" class="accordion-collapse collapse"
+                                                                     data-bs-parent="#visual-subgroups-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            {% for field, label in options.visual_id %}
+                                                                            {{ macro.render_feature(label, project) }}
+                                                                            {% endfor %}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div> <!-- End Sub-Accordion -->
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Core Features -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#core-{{ project.id }}">
+                                                        Core Features
+                                                    </button>
+                                                </h2>
+                                                <div id="core-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div class="accordion-body">
+                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                            {% for field, label in options.core_features %}
+                                                            {{ macro.render_feature(label, project) }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Utility Features -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#utility-{{ project.id }}">
+                                                        Utility Features
+                                                    </button>
+                                                </h2>
+                                                <div id="utility-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div class="accordion-body">
+                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                            {% for field, label in options.utility_features %}
+                                                            {{ macro.render_feature(label, project) }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Standards Compliance -->
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#standards-{{ project.id }}">
+                                                        Standards Compliance
+                                                    </button>
+                                                </h2>
+                                                <div id="standards-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div class="accordion-body">
+                                                        <div class="accordion" id="standards-sub-accordion-{{ project.id }}">
+                                                            <!-- ISO 26262 Sub-Accordion -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#iso26262-{{ project.id }}">
+                                                                        ISO 26262 Compliance
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="iso26262-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#standards-sub-accordion-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            <!-- ISO 26262 Version Dropdown -->
+                                                                            <div class="col">
+                                                                                <div class="card p-3 text-center shadow-sm">
+                                                                                    <small class="fw-bold d-block mb-2">ISO 26262 VERSION</small>
+                                                                                    {{ macro.render_dropdown('iso26262_version', options.iso26262_version_dropdown, project['iso26262_version'] or 'N/A', false, '', 'class="form-select"') }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- ISO 26262 Level Dropdown -->
+                                                                            <div class="col">
+                                                                                <div class="card p-3 text-center shadow-sm">
+                                                                                    <small class="fw-bold d-block mb-2">ISO 26262 LEVEL</small>
+                                                                                    {{ macro.render_dropdown('iso26262_level', options.iso26262_level_dropdown, project['iso26262_level'] or 'N/A', false, '', 'class="form-select"') }}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- ASPICE Sub-Accordion -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aspice-{{ project.id }}">
+                                                                        ASPICE Compliance
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="aspice-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#standards-sub-accordion-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            <div class="col">
+                                                                                <div class="card p-3 text-center shadow-sm">
+                                                                                    <small class="fw-bold d-block mb-2">ASPICE VERSION</small>
+                                                                                    {{ macro.render_dropdown('aspice_version', options.aspice_version_dropdown, project['aspice_version'] or 'N/A', false, '', 'class="form-select"') }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col">
+                                                                                <div class="card p-3 text-center shadow-sm">
+                                                                                    <small class="fw-bold d-block mb-2">ASPICE LEVEL</small>
+                                                                                    {{ macro.render_dropdown('aspice_level', options.aspice_level_dropdown, project['aspice_level'] or 'N/A', false, '', 'class="form-select"') }}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- ISO 21434 and ISO 21448 Sub-Accordion -->
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header">
+                                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#iso214xx-{{ project.id }}">
+                                                                        ISO 21434 & ISO 21448 Compliance
+                                                                    </button>
+                                                                </h2>
+                                                                <div id="iso214xx-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#standards-sub-accordion-{{ project.id }}">
+                                                                    <div class="accordion-body">
+                                                                        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                            <div class="col">
+                                                                                <div class="card p-3 text-center shadow-sm">
+                                                                                    <small class="fw-bold d-block mb-2">ISO 21434 VERSION</small>
+                                                                                    {{ macro.render_dropdown('iso21434', options.iso21434_dropdown, project['iso21434'] or 'N/A', false, '', 'class="form-select"') }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col">
+                                                                                <div class="card p-3 text-center shadow-sm">
+                                                                                    <small class="fw-bold d-block mb-2">ISO 21448 VERSION</small>
+                                                                                    {{ macro.render_dropdown('iso21448', options.iso21448_dropdown, project['iso21448'] or 'N/A', false, '', 'class="form-select"') }}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Regulatory Compliance -->
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#regulation-{{ project.id }}">
+                                                            Regulatory Compliance
+                                                        </button>
+                                                    </h2>
+                                                    <div id="regulation-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                        <div class="accordion-body">
+                                                            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                {% for field, label in options.regulations %}
+                                                                <div class="col">
+                                                                    <div class="card p-3 text-center shadow-sm">
+                                                                        <small class="fw-bold d-block mb-2">{{ label }}</small>
+                                                                        <div class="btn-group mt-1" role="group">
+                                                                            <input type="radio" class="btn-check" name="{{ field }}" id="{{ field }}_yes" value="x" {% if project[field]=='x' %}checked{% endif %}>
+                                                                            <label class="btn btn-outline-success btn-sm" for="{{ field }}_yes">YES</label>
+                                                                            <input type="radio" class="btn-check" name="{{ field }}" id="{{ field }}_no" value="NULL" {% if project[field] is none %}checked{% endif %}>
+                                                                            <label class="btn btn-outline-danger btn-sm" for="{{ field }}_no">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- SoC/Platform -->
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#hardware-{{ project.id }}">
+                                                            SoC/Platform
+                                                        </button>
+                                                    </h2>
+                                                    <div id="hardware-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                        <div class="accordion-body">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover align-middle text-center" style="table-layout: auto; width: auto;">
+                                                                    <thead class="table-light">
+                                                                        <tr>
+                                                                            <th class="text-start">SoC/Platform</th>
+                                                                            {% for field, label in options.hardware %}
+                                                                            <th class="text-center small px-2" style="writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; vertical-align: middle; text-align: center; min-width: 50px; background-color: {% if loop.index is even %}#f8f9fa{% else %}#ffffff{% endif %};">
+																				{{ label }}
+																			</th>
+                                                                            {% endfor %}
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td class="fw-bold text-start">Supported</td>
+                                                                            {% for field, label in options.hardware %}
+                                                                            <td class="text-center" style="background-color: {% if loop.index is even %}#f8f9fa{% else %}#ffffff{% endif %};">
+                                                                                <div class="form-check d-flex justify-content-center">
+                                                                                    <input class="form-check-input" type="checkbox" name="{{ field }}" id="{{ field }}" value="true" {% if project[field] %}checked{% endif %}">
+                                                                                </div>
+                                                                            </td>
+                                                                            {% endfor %}
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        <!-- Save changes button -->
+                                        <button type="submit" class="btn btn-primary btn-sm mt-3">
+                                            Save Changes
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">
+                                    No projects found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Prevent row click from triggering when clicking direct actions (Delete)
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', (e) => e.stopPropagation());
+        });
+
+        // Trigger filter logic whenever a filter input changes
+        document.querySelectorAll('.column-filter').forEach(input => {
+            input.addEventListener('input', filterTable);
+        });
+
+        // Filtering logic for Project Stage
+        function filterTable() {
+            const filters = {};
+            document.querySelectorAll('.column-filter').forEach(input => {
+                filters[input.getAttribute('data-column')] = input.value.toLowerCase();
+            });
+
+            document.querySelectorAll('tr.main-row').forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let show = Object.keys(filters).every(colIndex => {
+                    const filterVal = filters[colIndex];
+                    const cellText = cells[colIndex].textContent.trim().toLowerCase();
+
+                    // Hide rows where values are explicitly "N/A" or "-"
+                    if (filterVal === "" && (cellText === "n/a" || cellText === "-")) {
+                        return false;
+                    }
+
+                    return filterVal === "" || cellText.includes(filterVal);
+                });
+
+                row.style.display = show ? "" : "none";
+            });
+        }
+
+        // Sorting functionality
+        const sortDirections = {};
+        function sortTableByColumn(colIndex, clickedHeader) {
+            sortDirections[colIndex] = sortDirections[colIndex] === "asc" ? "desc" : "asc";
+
+            document.querySelectorAll("#headerRow th.sortable .sort-icon")
+                .forEach(icon => icon.textContent = "");
+            clickedHeader.querySelector(".sort-icon").textContent = sortDirections[colIndex] === "asc" ? "▲" : "▼";
+
+            const tbody = document.querySelector("tbody");
+            const rows = Array.from(document.querySelectorAll("tr.main-row")).sort((a, b) => {
+                const aText = a.cells[colIndex].textContent.trim().toLowerCase();
+                const bText = b.cells[colIndex].textContent.trim().toLowerCase();
+                return sortDirections[colIndex] === "asc" ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        document.querySelectorAll("#headerRow th.sortable").forEach((th, index) => {
+            th.addEventListener("click", () => sortTableByColumn(index, th));
+        });
+
+        // Combined DOMContentLoaded event for toast messages and initial filtering
+        document.addEventListener("DOMContentLoaded", function () {
+            hideBlanksFilter();
+            Array.from(document.querySelectorAll('.toast')).forEach(toastEl => {
+                const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                toast.show();
+            });
+        });
+    </script>
+</body>
+</html>

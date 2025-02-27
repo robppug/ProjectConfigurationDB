@@ -1,0 +1,60 @@
+/* styles.css */
+.table-hover tbody > tr:hover {
+    background-color: rgba(74, 144, 226, 0.05);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa;
+}
+
+.field-label {
+    width: 250px;
+    height: 20px;
+    font-weight: 500;
+    display: inline-flex;
+    white-space: nowrap;
+}
+
+.field-input {
+    width: auto;
+    height: 40px;
+    display: inline-flex;
+}
+
+.form-control {
+    width: auto;
+    height: 40px;
+}
+
+.column-filter {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 8px;
+}
+
+th.sortable {
+    cursor: pointer;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    font-size: 0.8rem;
+}
+
+.settings-link {
+    display: inline-flex;
+    font-size: 2rem;
+    color: #6c757d;
+    text-decoration: none;
+}
+
+.settings-link:hover {
+    color: #343a40;
+}
+
+.col {
+    min-width: 120px;
+    max-width: 200px;
+    flex: 1;
+    text-align: center;
+}
