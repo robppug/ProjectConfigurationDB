@@ -15,13 +15,19 @@
         <h1 class="h3 mb-4 text-primary">Add Project Configuration</h1>
         {% include '_messages.html' %}
         <form method="POST" novalidate>
+            <input type="text" class="form-control" name="project" required maxlength="100">
             <!-- Basic Information -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header">Basic Information</div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label">Project Name:</label>
-                        <input type="text" class="form-control" name="project" required>
+                        <input type="text" class="form-control {% if form.project.errors %}is-invalid{% endif %}" name="project">
+                        {% if form.project.errors %}
+                        <div class="invalid-feedback">
+                            {{ form.project.errors[0] }}
+                        </div>
+                        {% endif %}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Project Stage:</label>
@@ -42,14 +48,12 @@
                     <div class="row">
                         {% for field, label in options.cognitive_del %}
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">{{ label }}:</label>
-                            <input type="text" class="form-control" name="{{ field }}">
+                            {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
                         </div>
                         {% endfor %}
                         {% for field, label in options.cognitive_dil %}
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">{{ label }}:</label>
-                            <input type="text" class="form-control" name="{{ field }}">
+                            {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
                         </div>
                         {% endfor %}
                     </div>

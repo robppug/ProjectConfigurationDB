@@ -193,7 +193,7 @@
   ('ti_tda4_low',               'TI TDA4 Low'),
   ('ti_tda4_mid',               'TI TDA4 Mid'),
   ('ti_tda4_high',              'TI TDA4 High'),
-  ('amd_zync_ultrascale',       'AMD Zynq Ultrascale'),
+  ('amd_zynq_ultrascale',       'AMD Zynq Ultrascale'),
   ('qcm_sa81xx',                'QCM SA81xx'),
   ('qcm_sa86xx',                'QCM SA86xx'),
   ('renesas_v4h',               'Renesas V4H'),
@@ -207,4 +207,38 @@
   ('ti_sitara_2tops_2gb_ram',   'TI Sitara 2Tops 2GB RAM'),
   ('ti_sitara_1tops_8gb_ram',   'TI Sitara 1Tops 8GB RAM'),
   ('renesas_rcar_v4h',          'Renesas RCar V4H')
+] %}
+
+<!-- DB Variable                UI Text-->
+{% set operating_systems = [
+    ('linux',                  'Linux'),
+    ('qnx',                    'QNX'),
+    ('pike_os',                'Pike OS'),
+    ('android',                'Android'),
+    ('library',                'Library'),
+    ('ghs_integrity',          'GHS Integrity'),
+    ('windows',                'Windows'),
+    ('peta_linux',             'PetaLinux')
+] %}
+
+{% set camera_locations = [
+    ("frontal", "Frontal"),
+    ("offset_high", "Offset High"),
+    ("offset_low", "Offset Low"),
+    ("overhead", "Overhead")
+] %}
+
+{% set camera_settings = [
+    ("fusion", "Fusion"),
+    ("camera_rotation", "Camera Rotation"),
+    ("oms_dms", "OMS/DMS/Both"),
+    ("oms_iq_low", "OMSIQ-LOW"),
+    ("oms_iq_mid", "OMSIQ-MID"),
+    ("oms_iq_high", "OMSIQ-HIGH"),
+    ("bright_pupil", "Bright Pupil"),
+    ("dark_pupil", "Dark Pupil"),
+    ("smart_bright_pupil", "Smart Bright Pupil"),
+    ("nfov", "NFOV"),
+    ("wfov", "WFOV"),
+    ("seating_positions", "Seating Positions")
 ] %}

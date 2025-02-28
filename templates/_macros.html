@@ -32,7 +32,7 @@
 {% endmacro %}
 
 {% macro render_multiselect(name, options, selected_values=[]) %}
-<select name="{{ name }}[]" multiple class="form-select">
+<select name="{{ name }}[]" multiple class="form-select" aria-label="Platform selection">
     {% for value, label in options %}
     <option value="{{ value }}" {% if value in selected_values %}selected{% endif %}>{{ label }}</option>
     {% endfor %}

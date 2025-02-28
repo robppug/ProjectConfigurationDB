@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>[SM] Project Configurations</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body class="bg-light">
@@ -79,7 +79,8 @@
                                 <td>{{ project.last_updated or '-' }}</td>
                                 <td>{{ project.description or '' }}</td>
                                 <td>
-                                    <form action="{{ url_for('delete', id=project.id) }}" method="POST" novalidate>
+                                    <form action="{{ url_for('delete', id=project.id) }}" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE">
                                         <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
                                             Delete
                                         </button>
@@ -133,7 +134,8 @@
                                                             <div class="col-md-12">
                                                                 <div class="mb-3">
                                                                     <label class="fw-bold">Description:</label>
-                                                                    <textarea name="project" class="form-control form-control-sm" rows="4">{{ project.description or '' }}</textarea>
+                                                                    <textarea name="description" class="form-control form-control-sm" rows="4">{{ project.description or '' }}</textarea>
+
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -519,9 +521,9 @@
                                                                     <div class="card p-3 text-center shadow-sm">
                                                                         <small class="fw-bold d-block mb-2">{{ label }}</small>
                                                                         <div class="btn-group mt-1" role="group">
-                                                                            <input type="radio" class="btn-check" name="{{ field }}" id="{{ field }}_yes" value="x" {% if project[field]=='x' %}checked{% endif %}>
+                                                                            <input type="radio" class="btn-check" name="reg_{{ field }}" id="{{ field }}_yes" value="x" {% if project[field]=='x' %}checked{% endif %}>
                                                                             <label class="btn btn-outline-success btn-sm" for="{{ field }}_yes">YES</label>
-                                                                            <input type="radio" class="btn-check" name="{{ field }}" id="{{ field }}_no" value="NULL" {% if project[field] is none %}checked{% endif %}>
+                                                                            <input type="radio" class="btn-check" name="reg_{{ field }}" id="{{ field }}_no" value="NULL" {% if project[field] is none %}checked{% endif %}>
                                                                             <label class="btn btn-outline-danger btn-sm" for="{{ field }}_no">NO</label>
                                                                         </div>
                                                                     </div>
@@ -535,48 +537,193 @@
                                                 <!-- SoC/Platform -->
                                                 <div class="accordion-item">
                                                     <h2 class="accordion-header">
-                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#hardware-{{ project.id }}">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#soc_platform-{{ project.id }}">
                                                             SoC/Platform
                                                         </button>
                                                     </h2>
-                                                    <div id="hardware-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                    <div id="soc_platform-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
                                                         <div class="accordion-body">
-                                                            <div class="table-responsive">
-                                                                <table class="table table-bordered table-hover align-middle text-center" style="table-layout: auto; width: auto;">
-                                                                    <thead class="table-light">
-                                                                        <tr>
-                                                                            <th class="text-start">SoC/Platform</th>
-                                                                            {% for field, label in options.hardware %}
-                                                                            <th class="text-center small px-2" style="writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; vertical-align: middle; text-align: center; min-width: 50px; background-color: {% if loop.index is even %}#f8f9fa{% else %}#ffffff{% endif %};">
-																				{{ label }}
-																			</th>
-                                                                            {% endfor %}
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td class="fw-bold text-start">Supported</td>
-                                                                            {% for field, label in options.hardware %}
-                                                                            <td class="text-center" style="background-color: {% if loop.index is even %}#f8f9fa{% else %}#ffffff{% endif %};">
-                                                                                <div class="form-check d-flex justify-content-center">
-                                                                                    <input class="form-check-input" type="checkbox" name="{{ field }}" id="{{ field }}" value="true" {% if project[field] %}checked{% endif %}">
-                                                                                </div>
-                                                                            </td>
-                                                                            {% endfor %}
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                {% for field, label in options.hardware %}
+                                                                <div class="col d-flex flex-fill">
+                                                                    <div class="card p-3 text-center shadow-sm h-100 w-100 d-flex flex-column">
+                                                                        <small class="fw-bold d-block mb-2 text-truncate">{{ label }}</small>
+                                                                        <div class="btn-group mt-auto" role="group">
+                                                                            <input type="radio" class="btn-check" name="reg_{{ field }}" id="{{ field }}_yes" value="x" {% if project[field]=='x' %}checked{% endif %}>
+                                                                            <label class="btn btn-outline-success btn-sm" for="{{ field }}_yes">YES</label>
+                                                                            <input type="radio" class="btn-check" name="reg_{{ field }}" id="{{ field }}_no" value="NULL" {% if project[field] is none %}checked{% endif %}>
+                                                                            <label class="btn btn-outline-danger btn-sm" for="{{ field }}_no">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {% endfor %}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                            </div>
-                                        <!-- Save changes button -->
-                                        <button type="submit" class="btn btn-primary btn-sm mt-3">
-                                            Save Changes
-                                        </button>
-                                    </form>
+
+                                                <!-- Operating System -->
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#os-{{ project.id }}">
+                                                            Operating System
+                                                        </button>
+                                                    </h2>
+                                                    <div id="os-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                        <div class="accordion-body">
+                                                            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                                                                {% for field, label in options.operating_systems %}
+                                                                <div class="col d-flex flex-fill">
+                                                                    <div class="card p-3 text-center shadow-sm h-100 w-100 d-flex flex-column">
+                                                                        <small class="fw-bold d-block mb-2 text-truncate">{{ label }}</small>
+                                                                        <div class="btn-group mt-auto" role="group">
+                                                                            <input type="radio" class="btn-check" name="reg_{{ field }}" id="{{ field }}_yes" value="x" {% if project[field]=='x' %}checked{% endif %}>
+                                                                            <label class="btn btn-outline-success btn-sm" for="{{ field }}_yes">YES</label>
+                                                                            <input type="radio" class="btn-check" name="reg_{{ field }}" id="{{ field }}_no" value="NULL" {% if project[field] is none %}checked{% endif %}>
+                                                                            <label class="btn btn-outline-danger btn-sm" for="{{ field }}_no">NO</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Packaging Configuration -->
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#packaging-{{ project.id }}">
+                                                            Packaging Configuration
+                                                        </button>
+                                                    </h2>
+                                                    <div id="packaging-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                        <div class="accordion-body">
+                                                            <!-- OMS/DMS Selection (Standalone Card) -->
+                                                            <div class="card p-3 text-center shadow-sm mb-3">
+                                                                <small class="fw-bold d-block mb-2">OMS/DMS Selection</small>
+                                                                <select name="OMS_DMS_Both" class="form-select form-select-sm">
+                                                                    <option value="OMS" {% if project['OMS_DMS_Both']=="OMS" %}selected{% endif %}>OMS</option>
+                                                                    <option value="DMS" {% if project['OMS_DMS_Both']=="DMS" %}selected{% endif %}>DMS</option>
+                                                                    <option value="BOTH" {% if project['OMS_DMS_Both']=="BOTH" %}selected{% endif %}>BOTH</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <!-- Table for Other Fields -->
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover align-middle text-center" style="table-layout: auto; width: auto;">
+                                                                    <thead class="table-light">
+                                                                        <tr>
+                                                                            <th class="text-start">Configuration</th>
+                                                                            {% for field, label in options.camera_settings %}
+                                                                            {% if field not in ["OMS_DMS_Both"] %}
+                                                                            <th class="text-center small px-2" style="writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; vertical-align: middle; text-align: center; min-width: 50px;">
+                                                                                {{ label }}
+                                                                            </th>
+                                                                            {% endif %}
+                                                                            {% endfor %}
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td class="fw-bold text-start">Required</td>
+                                                                            {% for field, label in options.camera_settings %}
+                                                                            {% if field not in ["OMS_DMS_Both"] %}
+                                                                            <td class="text-center">
+                                                                                <input type="checkbox" name="{{ field }}" value="true" {% if project[field] %}checked{% endif %}>
+                                                                            </td>
+                                                                            {% endif %}
+                                                                            {% endfor %}
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Camera Configuration (Image with Clickable Camera Icons) -->
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#camera-{{ project.id }}">
+                                                            Camera Configuration
+                                                        </button>
+                                                    </h2>
+                                                    <div id="camera-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                        <div class="accordion-body d-flex justify-content-center">
+                                                            <div class="card p-3 text-center shadow-sm mb-3">
+                                                                <small class="fw-bold d-block mb-1">Camera Locations</small>
+                                                                <div class="position-relative mx-auto" style="width: 100%; max-width: 1024px;">
+                                                                    <img src="{{ url_for('static', filename='cabin.png') }}" class="img-fluid d-block mx-auto" alt="Camera Locations">
+                                                                    {% set cameras = {
+                                                                    "1": {"left": 460, "top": 70, "width": 120, "height": 77},
+                                                                    "2": {"left": 442, "top": 180, "width": 155, "height": 49},
+                                                                    "3": {"left": 294, "top": 360, "width": 58, "height": 28},
+                                                                    "4": {"left": 438, "top": 320, "width": 166, "height": 68},
+                                                                    "5": {"left": 219, "top": 245, "width": 63, "height": 122}
+                                                                    } %}
+
+                                                                    {% for camera_id, data in cameras.items() %}
+                                                                    <div id="camera_{{ camera_id }}_container"
+                                                                         class="position-absolute camera-container {% if not project[camera_id] %}disabled{% endif %}"
+                                                                         style="left: {{ data.left }}px; top: {{ data.top }}px; width: {{ data.width }}px; height: {{ data.height }}px; cursor: pointer;"
+                                                                         onclick="toggleCameraImage('{{ camera_id }}')">
+
+                                                                        <input type="checkbox" id="camera_{{ camera_id }}" name="camera_{{ camera_id }}" class="d-none" {% if not project[camera_id] %}checked{% endif %}>
+                                                                        <div id="transparent_box_{{ camera_id }}" class="transparent-box"></div>
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <!-- Seating Positions (Image with Clickable Seat Icons) -->
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#seating-{{ project.id }}">
+                                                            Seating Positions
+                                                        </button>
+                                                    </h2>
+                                                    <div id="seating-{{ project.id }}" class="accordion-collapse collapse" data-bs-parent="#accordion-{{ project.id }}">
+                                                        <div class="accordion-body d-flex justify-content-center">
+                                                            <div class="card p-3 text-center shadow-sm mb-3">
+                                                                <small class="fw-bold d-block mb-1">Seating Positions</small>
+
+                                                                <div class="position-relative mx-auto" style="width: 100%; max-width: 800px;">
+                                                                    <img src="{{ url_for('static', filename='seating_positions.png') }}" class="img-fluid d-block mx-auto" alt="Seating Positions">
+
+                                                                    <!-- Overlay Clickable Seats -->
+                                                                    {% for i in range(1, 10) %}
+                                                                    <div class="position-absolute seat-container"
+                                                                         style="top: {{ 25 + ((i - 1) // 3) * 13 }}%; left: {{ 25 + ((i - 1) % 3) * 13 }}%; width: 40px; height: 40px; cursor: pointer;"
+                                                                         onclick="toggleSeatImage('{{ i }}')">
+
+                                                                        <input type="checkbox" id="seat_{{ i }}" name="seat_{{ i }}" class="d-none" {% if project['seat_' + i|string] %}checked{% endif %}>
+
+                                                                        <img id="seat_img_{{ i }}"
+                                                                             src="{{ url_for('static', filename='human.png') }}"
+                                                                             class="seat-image"
+                                                                             style="width: 200%; height: 200%; visibility: {% if project['seat_' + i|string] %}visible{% else %}hidden{% endif %};"
+                                                                             alt="Seat {{ i }}">
+                                                                    </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <!-- Save changes button -->
+                                                <button type="submit" class="btn btn-primary btn-sm mt-3">
+                                                    Save Changes
+                                                </button>
+</form>
                                 </td>
                             </tr>
                             {% else %}
@@ -634,20 +781,59 @@
         // Sorting functionality
         const sortDirections = {};
         function sortTableByColumn(colIndex, clickedHeader) {
-            sortDirections[colIndex] = sortDirections[colIndex] === "asc" ? "desc" : "asc";
+            // Add numeric sorting for ID column
+            if (colIndex === 0) {
+                rows.sort((a, b) => {
+                    const aVal = parseInt(a.cells[colIndex].textContent);
+                    const bVal = parseInt(b.cells[colIndex].textContent);
+                    return sortDirections[colIndex] === "asc" ? aVal - bVal : bVal - aVal;
+                });
+            }
+            // Add date sorting for Last Updated
+            else if (colIndex === 3) {
+                rows.sort((a, b) => {
+                    const aDate = new Date(a.cells[colIndex].textContent);
+                    const bDate = new Date(b.cells[colIndex].textContent);
+                    return sortDirections[colIndex] === "asc" ? aDate - bDate : bDate - aDate;
+                });
+            }
+        }
 
-            document.querySelectorAll("#headerRow th.sortable .sort-icon")
-                .forEach(icon => icon.textContent = "");
-            clickedHeader.querySelector(".sort-icon").textContent = sortDirections[colIndex] === "asc" ? "▲" : "▼";
+        function toggleFillBox(event) {
+            let box = event.target.closest('.red-box');
+            if (box) {
+                box.classList.toggle('filled');
+            }
+        }
 
-            const tbody = document.querySelector("tbody");
-            const rows = Array.from(document.querySelectorAll("tr.main-row")).sort((a, b) => {
-                const aText = a.cells[colIndex].textContent.trim().toLowerCase();
-                const bText = b.cells[colIndex].textContent.trim().toLowerCase();
-                return sortDirections[colIndex] === "asc" ? aText.localeCompare(bText) : bText.localeCompare(aText);
+        document.addEventListener('DOMContentLoaded', function () {
+            let redBoxes = document.querySelectorAll('.red-box');
+            redBoxes.forEach(box => {
+                box.addEventListener('click', toggleFillBox);
             });
+        });
 
-            rows.forEach(row => tbody.appendChild(row));
+        function toggleCameraImage(cameraId) {
+            var checkbox = document.getElementById("camera_" + cameraId);
+            var container = document.getElementById("camera_" + cameraId + "_container");
+
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                container.classList.add("disabled");
+            } else {
+                container.classList.remove("disabled");
+            }
+        }
+
+        function toggleSeatImage(seatNumber) {
+            var checkbox = document.getElementById("seat_" + seatNumber);
+            var image = document.getElementById("seat_img_" + seatNumber);
+
+            checkbox.checked = !checkbox.checked;
+            image.style.visibility = checkbox.checked ? "visible" : "hidden";
+
+            console.log(`Seat ${seatNumber} toggled: Checked = ${checkbox.checked}, Image visibility = ${image.style.visibility}`);
         }
 
         document.querySelectorAll("#headerRow th.sortable").forEach((th, index) => {
@@ -656,7 +842,7 @@
 
         // Combined DOMContentLoaded event for toast messages and initial filtering
         document.addEventListener("DOMContentLoaded", function () {
-            hideBlanksFilter();
+            filterTable();
             Array.from(document.querySelectorAll('.toast')).forEach(toastEl => {
                 const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
                 toast.show();

@@ -15,6 +15,15 @@ db = SQLAlchemy(app)
 
 class ProjectConfiguration(db.Model):
     __tablename__ = 'project_configurations'
+    
+    cameras = {
+    "1": {"left": 460, "top": 70, "width": 120, "height": 77},
+    "2": {"left": 442, "top": 180, "width": 155, "height": 49},
+    "3": {"left": 294, "top": 360, "width": 58, "height": 28},
+    "4": {"left": 438, "top": 320, "width": 166, "height": 68},
+    "5": {"left": 219, "top": 245, "width": 63, "height": 122}
+    }
+
     id = db.Column(db.Integer, primary_key=True)
     project = db.Column(db.String(100), nullable=False)
     project_stage = db.Column(db.String(50))
@@ -46,7 +55,7 @@ class ProjectConfiguration(db.Model):
     vis_das_fine = db.Column("VIS-DAS-FINE", db.String(10))
     vis_das_ray = db.Column("VIS-DAS-RAY", db.String(10))
     
-    # Standard Compliance Fields
+    # Standard Compliance
     aspice_level = db.Column(db.Text)
     aspice_version = db.Column(db.Text)
     iso26262_level = db.Column(db.Text)
@@ -54,7 +63,7 @@ class ProjectConfiguration(db.Model):
     iso21448 = db.Column(db.Text)
     iso21434 = db.Column(db.Text)
     
-    # Regulatory Compliance Fields
+    # Regulatory Compliance
     ncap_23 = db.Column(db.Text)
     ncap_26 = db.Column(db.Text)
     ncap_29 = db.Column(db.Text)
@@ -62,7 +71,7 @@ class ProjectConfiguration(db.Model):
     gsr_v2 = db.Column( db.Text)
     gbt = db.Column(db.Text)
 
-    # Hardware/Platform Fields
+    # Hardware/Platform
     ti_sitara = db.Column(db.Boolean, default=False)
     ti_tda4_entry = db.Column(db.Boolean, default=False)
     ti_tda4_low = db.Column(db.Boolean, default=False)
@@ -82,6 +91,34 @@ class ProjectConfiguration(db.Model):
     ti_sitara_2tops_2gb_ram = db.Column(db.Boolean, default=False)
     ti_sitara_1tops_8gb_ram = db.Column(db.Boolean, default=False)
     renesas_rcar_v4h = db.Column(db.Boolean, default=False)
+    
+    # Operating Systems
+    linux = db.Column(db.Boolean, default=False)
+    qnx = db.Column(db.Boolean, default=False)
+    pike_os = db.Column(db.Boolean, default=False)
+    android = db.Column(db.Boolean, default=False)
+    library = db.Column(db.Boolean, default=False)
+    ghs_integrity = db.Column(db.Boolean, default=False)
+    windows = db.Column(db.Boolean, default=False)
+    peta_linux = db.Column(db.Boolean, default=False)
+
+    # Packaging Configuration
+    frontal = db.Column(db.Text)
+    offset_high = db.Column(db.Text)
+    offset_low = db.Column(db.Text)
+    overhead = db.Column(db.Text)
+    fusion = db.Column(db.Text)
+    camera_rotation = db.Column(db.Text)
+    oms_dms = db.Column(db.Text)
+    oms_iq_high = db.Column(db.Text)
+    oms_iq_mid = db.Column(db.Text)
+    oms_iq_high = db.Column(db.Text)
+    bright_pupil = db.Column(db.Text)
+    dark_pupil = db.Column(db.Text)
+    smart_bright_Pupil = db.Column(db.Text)
+    nfov = db.Column(db.Text)
+    wfov = db.Column(db.Text)
+    seating_positions = db.Column(db.Text)
     
     def __repr__(self):
         return f"<Project {self.project}>"
@@ -136,7 +173,7 @@ def populate_project_from_form(project):
         "gsr": "gsr",
         "gsr_v2": "gsr_v2",
         "gbt": "gbt",
-        # Hardware/Platform Fields (checkboxes)
+        # Hardware/Platform
         "ti_sitara": "ti_sitara",
         "ti_tda4_entry": "ti_tda4_entry",
         "ti_tda4_low": "ti_tda4_low",
@@ -156,16 +193,36 @@ def populate_project_from_form(project):
         "ti_sitara_2tops_2gb_ram": "ti_sitara_2tops_2gb_ram",
         "ti_sitara_1tops_8gb_ram": "ti_sitara_1tops_8gb_ram",
         "renesas_rcar_v4h": "renesas_rcar_v4h",
+        # Camera Configuration
+        "frontal": "Frontal",
+        "offset_High": "Offset_High",
+        "offset_Low": "Offset_Low",
+        "overhead": "Overhead",
+        "fusion": "Fusion",
+        "camera_Rotation": "Camera_Rotation",
+        "oms_dms": "OMS_DMS_Both",
+        "oms_iq_low": "OMSIQ_LOW",
+        "oms_iq_mid": "OMSIQ_MID",
+        "oms_iq_high": "OMSIQ_HIGH",
+        "bright_pupil": "Bright_Pupil",
+        "dark_pupil": "Dark_Pupil",
+        "smart_bright_pupil": "Smart_Bright_Pupil",
+        "nfov": "NFOV",
+        "wfov": "WFOV",
+        "seating_positions": "Seating_Positions",
+        # Operating System Fields (Newly Added)
+        "linux": "Linux",
+        "qnx": "QNX",
+        "pike_os": "Pike_OS",
+        "android": "Android",
+        "library": "NA",
+        "ghs_integrity": "GHS_Integrity",
+        "windows": "Windows",
+        "peta_linux": "PetaLinux",
     }
+
     for form_field, model_attr in field_mapping.items():
-        # For checkboxes, you might want to set the value to True/False explicitly.
-        if form_field in ["ti_sitara", "ti_tda4_entry", "ti_tda4_low", "ti_tda4_mid", "ti_tda4_high",
-                          "amd_zynq_ultrascale", "qcm_sa81xx", "qcm_sa86xx", "renesas_v4h", "fdm_occula_8_0",
-                          "fdm_occula_8_2", "fdm_occula_8_3", "ov_oax4600", "ambarella_cv25", "x86_64",
-                          "edme", "ti_sitara_2tops_2gb_ram", "ti_sitara_1tops_8gb_ram", "renesas_rcar_v4h"]:
-            setattr(project, model_attr, True if request.form.get(form_field) == "on" else False)
-        else:
-            setattr(project, model_attr, request.form.get(form_field))
+        setattr(project, model_attr, request.form.get(form_field, None))
 
 
 @app.route('/add', methods=['GET', 'POST'])

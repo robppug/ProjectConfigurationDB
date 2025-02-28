@@ -24,14 +24,18 @@
     <Compile Include="app.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="css\" />
+    <Folder Include="static\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="static\cabin.png" />
+    <Content Include="static\camera.png" />
+    <Content Include="static\human.png" />
+    <Content Include="static\seating_positions.png" />
+    <Content Include="static\styles.css" />
     <Content Include="templates\add.html" />
     <Content Include="templates\index.html" />
     <Content Include="templates\settings.html" />
-    <Content Include="css\styles.css" />
     <Content Include="templates\_options.html" />
     <Content Include="templates\_macros.html" />
     <Content Include="templates\_messages.html" />
