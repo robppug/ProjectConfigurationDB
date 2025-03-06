@@ -1,244 +1,255 @@
-<!-- DB Variable      UI Text           Button Class-->
+<!-- DB Variable                  UI Text                       Button Colour-->
 {% set project_stages = [
-    ('RFI',           'RFI',            "primary"),
-    ('RFQ',           'RFQ',            "info"),
-    ('EXP',           'EXP',            "warning"),
-    ('PLATFORM',      'PLATFORM',       "secondary"),
-    ('ACTIVE',        'ACTIVE',         "success"),
-    ('TLS',           'TLS',            "danger")
+    ('RFI',                       'RFI',                        'primary'),
+    ('RFQ',                       'RFQ',                        'info'),
+    ('EXP',                       'EXP',                        'warning'),
+    ('PLATFORM',                  'PLATFORM',                   'secondary'),
+    ('ACTIVE',                    'ACTIVE',                     'success'),
+    ('TLS',                       'TLS',                        'danger')
 ] %}
 
-<!-- DB Variable      UI Text           Button Class-->
+<!-- DB Variable                  UI Text                       Button Colour-->
 {% set feature = [
-    ("YES",           "YES",            "success"),
-    ("NO",            "NO",             "danger"),
-    ("DEP",           "DEP",            "warning"),
-    ("CAN",           "CAN",            "info"),
-    ("CR",            "CR",             "dark")
+    ('YES',                       'YES',                        'success'),
+    ('NO',                        'NO',                         'danger'),
+    ('DEP',                       'DEP',                        'warning'),
+    ('CAN',                       'CAN',                        'info'),
+    ('CR',                        'CR',                         'dark')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set cognitive_del = [
-    ('cog_del_inattentive',     'Inattentive'),
-    ('cog_del_disengaged',      'Disengaged'),
-    ('cog_del_distracted',      'Distracted'),
+    ('cog_del_inattentive',       'Inattentive'),
+    ('cog_del_disengaged',        'Disengaged'),
+    ('cog_del_distracted',        'Distracted'),
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set cognitive_dil = [
-    ('cog_dil_drowsy',          'Drowsy'),
-    ('cog_dil_microsleeping',   'Microsleeping'),
-    ('cog_dil_sleeping',        'Sleeping')
+    ('cog_dil_drowsy',            'Drowsy'),
+    ('cog_dil_microsleeping',     'Microsleeping'),
+    ('cog_dil_sleeping',          'Sleeping')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_das = [
-    ('vis_das_coarse',          'Coarse'),
-    ('vis_das_fine',            'Fine'),
-    ('vis_das_ray',             'Ray')
+    ('vis_das_coarse',            'Coarse'),
+    ('vis_das_fine',              'Fine'),
+    ('vis_das_ray',               'Ray')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_activity = [
-    ('vis_gesture_head',        'Gesture Head'),
-    ('vis_activity_ahp',        'Abnormal Head Posture'),
-    ('vis_activity_handpos',    'Hand Position'),
-    ('vis_activity_helditem',   'Held Item'),
-    ('vis_activity_oop',        'Out of Position')
+    ('vis_gesture_head',          'Gesture Head'),
+    ('vis_activity_ahp',          'Abnormal Head Posture'),
+    ('vis_activity_handpos',      'Hand Position'),
+    ('vis_activity_helditem',     'Held Item'),
+    ('vis_activity_oop',          'Out of Position')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_mouth = [
-    ('vis_mouth_speak',         'Speak'),
-    ('vis_mouth_laugh',         'Laugh'),
-    ('vis_mouth_cough',         'Cough'),
-    ('vis_mouth_sneeze',        'Sneeze'),
-    ('vis_mouth_yawn',          'Yawn')
+    ('vis_mouth_speak',           'Speak'),
+    ('vis_mouth_laugh',           'Laugh'),
+    ('vis_mouth_cough',           'Cough'),
+    ('vis_mouth_sneeze',          'Sneeze'),
+    ('vis_mouth_yawn',            'Yawn')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_object = [
-    ('vis_smoke',               'Smoke'),
-    ('vis_phone',               'Phone')
+    ('vis_smoke',                 'Smoke'),
+    ('vis_phone',                 'Phone')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_fod = [
-    ('vis-fod-face',            'Face'),
-    ('vis-fod-mask',            'Mask'),
-    ('vis-fod-eyemask',         'Eye Mask')
+    ('vis_fod_face',              'Face'),
+    ('vis_fod_mask',              'Mask'),
+    ('vis_fod_eyemask',           'Eye Mask')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_sod = [
-    ('vis-sod-childseat',       'Childseat'),
-    ('vis-sod-seatbelt',        'Seatbelt'),
-    ('vis-sod-height',          'Height'),
-    ('vis-sod-weight',          'Weight'),
-    ('vis-sod-age',             'Age'),
-    ('vis-sod-gender',          'Gender'),
-    ('VIS-SOD-PRESENCE-LOW',    'Presence (Low)'),
-    ('VIS-SOD-PRESENCE-HIGH',   'Presence (High)')
+    ('vis_sod_childseat',         'Childseat'),
+    ('vis_sod_seatbelt',          'Seatbelt'),
+    ('vis_sod_height',            'Height'),
+    ('vis_sod_weight',            'Weight'),
+    ('vis_sod_age',               'Age'),
+    ('vis_sod_gender',            'Gender'),
+    ('vis_sod_PRESENCE-LOW',      'Presence (Low)'),
+    ('vis_sod_PRESENCE-HIGH',     'Presence (High)')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set visual_id = [
-    ('VIS-ID-RECOGNIZE-LOW',    'Recognize (Low)'),
-    ('VIS-ID-RECOGNIZE-HIGH',   'Recognize (High)'),
-    ('VIS-ID-CHANGE',           'Change'),
-    ('VIS-SPOOF',               'Spoof'),
-    ('VIS-EXPR',                'Expression')
+    ('vis_id_recognize_low',      'Recognize (Low)'),
+    ('vis_id_recognize_high',     'Recognize (High)'),
+    ('vis_id_change',             'Change'),
+    ('vis_spoof',                 'Spoof'),
+    ('vis_expr',                  'Expression')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set utility_features = [
-  ('UTIL-CPOSE-CF',             'Camera Pose (Cabin Features)'),
-  ('UTIL-CPOSE-IMU',            'Camera Pose (IMU)'),
-  ('UTIL-VIDEO',                'Video Conferencing'),
-  ('UTIL-DIAG-STK',             'Diagnostics (Stuck Image)'),
-  ('UTIL-DIAG-LBD',             'Diagnostics (Lens Blockage Detection)'),
-  ('UTIL-DIAG-LIQ',             'Diagnostics (Low Image Quality)'),
-  ('UTIL-DIAG-COOA',            'Diagnostics (Camera out of Alignment)')
+    ('util_cpose_cf',             'Camera Pose (Cabin Features)'),
+    ('util_cpose_imu',            'Camera Pose (IMU)'),
+    ('util_video',                'Video Conferencing'),
+    ('util_diag_stk',             'Stuck Image'),
+    ('util_diag_lbd',             'Lens Blockage Detection'),
+    ('util_diag_liq',             'Low Image Quality'),
+    ('util_diag_cooa',            'Camera out of Alignment')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set core_features = [
-  ('CORE-BPT-COARSE',           'Body Pose (Coarse)'),
-  ('CORE-BPT-FINE',             'Body Pose (Fine)'),
-  ('CORE-DEPTH',                'CORE-DEPTH'),
-  ('CORE-GET-GAZE',             'CORE-GET-GAZE'),
-  ('CORE-GET-EYELID',           'CORE-GET-EYELID'),
-  ('CORE-HT-POSE',              'CORE-HT-POSE'),
-  ('CORE-HT-LANDMARKS',         'CORE-HT-LANDMARKS'),
-  ('CORE-ED',                   'CORE-ED'),
-  ('CORE-AEC',                  'CORE-AEC'),
-  ('CORE-FD',                   'CORE-FD'),
-  ('CORE-MS',                   'CORE-MS')
+    ('core_bpt_coarse',           'Body Pose (Coarse)'),
+    ('core_bpt_fine',             'Body Pose (Fine)'),
+    ('core_depth',                'Depth Perception'),
+    ('core_get_gaze',             'Eye Gaze Tracker'),
+    ('core_get_eyelid',           'Eye Lid Tracker'),
+    ('core_ht_pose',              'Head Position'),
+    ('core_ht_landmarks',         'Head Landmarks'),
+    ('core_ed',                   'core_ed'),
+    ('core_aec',                  'core_aec'),
+    ('core_fd',                   'core_fd'),
+    ('core_ms',                   'core_ms')
 ] %}
 
 
-<!-- DB Variable            UI Text                 Selection Options-->
+<!-- DB Variable                  UI Text                       Selection Options-->
 {% set standards_compliance = [
-    ('aspice_level',        'ASPICE Level',         aspice_level_dropdown),
-    ('aspice_version',      'ASPICE Version',       aspice_version_dropdown),
-    ('iso26262_level',      'ISO 26262 Level',      iso26262_level_dropdown),
-    ('iso26262_version',    'ISO 26262 Version',    iso26262_version_dropdown),
-    ('iso21448',            'ISO 21448',            iso21448_dropdown),
-    ('iso21434',            'ISO 21434',            iso21434_dropdown)
+    ('aspice_level',              'ASPICE Level',               aspice_level_dropdown),
+    ('aspice_version',            'ASPICE Version',             aspice_version_dropdown),
+    ('iso26262_level',            'ISO 26262 Level',            iso26262_level_dropdown),
+    ('iso26262_version',          'ISO 26262 Version',          iso26262_version_dropdown),
+    ('iso21448',                  'ISO 21448',                  iso21448_dropdown),
+    ('iso21434',                  'ISO 21434',                  iso21434_dropdown)
 ] %}
 
 
-<!-- DB Variable    UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set regulations = [
-  ('ncap_23',       'NCAP 23'),
-  ('ncap_26',       'NCAP 26'),
-  ('ncap_29',       'NCAP 29'),
-  ('gsr',           'GSR'),
-  ('gsr_v2',        'GSR v2'),
-  ('gbt',           'GB/T')
+    ('ncap_23',                   'NCAP 23'),
+    ('ncap_26',                   'NCAP 26'),
+    ('ncap_29',                   'NCAP 29'),
+    ('gsr',                       'GSR'),
+    ('gsr_v2',                    'GSR v2'),
+    ('gbt',                       'GB/T')
 ] %}
 
-<!-- DB Variable            UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set aspice_level_dropdown = [
-  ('N/A',                   'N/A'),
-  ('Level 0: Basic',        'Level 0: Basic'),
-  ('Level 1: Performed',    'Level 1: Performed'),
-  ('Level 2: Managed',      'Level 2: Managed'),
-  ('Level 3: Established',  'Level 3: Established'),
-  ('Level 4: Predictable',  'Level 4: Predictable'),
-  ('Level 5: Innovating',   'Level 5: Innovating')
+    ('N/A',                       'N/A'),
+    ('Level 0: Basic',            'Level 0: Basic'),
+    ('Level 1: Performed',        'Level 1: Performed'),
+    ('Level 2: Managed',          'Level 2: Managed'),
+    ('Level 3: Established',      'Level 3: Established'),
+    ('Level 4: Predictable',      'Level 4: Predictable'),
+    ('Level 5: Innovating',       'Level 5: Innovating')
 ] %}
 
-<!-- DB Variable    UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set aspice_version_dropdown = [
-  ('N/A',           'N/A'),
-  ('3.0',           '3.0'),
-  ('3.1',           '3.1'),
-  ('3.2',           '3.2')
+    ('N/A',                       'N/A'),
+    ('3.0',                       '3.0'),
+    ('3.1',                       '3.1'),
+    ('4.0',                       '4.0')
 ] %}
 
-<!-- DB Variable     UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set iso26262_level_dropdown = [
-  ('N/A',           'N/A'),
-  ('QM',            'QM'),
-  ('ASIL A',        'ASIL A'),
-  ('ASIL B',        'ASIL B'),
-  ('ASIL C',        'ASIL C'),
-  ('ASIL D',        'ASIL D')
+    ('N/A',                       'N/A'),
+    ('QM',                        'QM'),
+    ('ASIL A',                    'ASIL A'),
+    ('ASIL B',                    'ASIL B'),
+    ('ASIL C',                    'ASIL C'),
+    ('ASIL D',                    'ASIL D')
 ] %}
 
-<!-- DB Variable    UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set iso26262_version_dropdown = [
-  ('N/A',           'N/A'),
-  ('2011',          '2011'),
-  ('2018',          '2018')
+    ('N/A',                       'N/A'),
+    ('2011',                      '2011'),
+    ('2018',                      '2018')
 ] %}
 
-<!-- DB Variable    UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set iso21448_dropdown = [
-  ('N/A',           'N/A'),
-  ('2019',          '2019')
+    ('N/A',                       'N/A'),
+    ('2019',                      '2019')
 ] %}
 
-<!-- DB Variable    UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set iso21434_dropdown = [
-  ('N/A',           'N/A'),
-  ('2021',          '2021')
+    ('N/A',                       'N/A'),
+    ('2021',                      '2021')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set hardware = [
-  ('ti_sitara',                 'TI Sitara'),
-  ('ti_tda4_entry',             'TI TDA4 Entry'),
-  ('ti_tda4_low',               'TI TDA4 Low'),
-  ('ti_tda4_mid',               'TI TDA4 Mid'),
-  ('ti_tda4_high',              'TI TDA4 High'),
-  ('amd_zynq_ultrascale',       'AMD Zynq Ultrascale'),
-  ('qcm_sa81xx',                'QCM SA81xx'),
-  ('qcm_sa86xx',                'QCM SA86xx'),
-  ('renesas_v4h',               'Renesas V4H'),
-  ('fdm_occula_8_0',            'FDM Occula 8.0'),
-  ('fdm_occula_8_2',            'FDM Occula 8.2'),
-  ('fdm_occula_8_3',            'FDM Occula 8.3'),
-  ('ov_oax4600',                'OV OAX4600'),
-  ('ambarella_cv25',            'Ambarella CV25'),
-  ('x86_64',                    'x86/64'),
-  ('edme',                      'e-DME'),
-  ('ti_sitara_2tops_2gb_ram',   'TI Sitara 2Tops 2GB RAM'),
-  ('ti_sitara_1tops_8gb_ram',   'TI Sitara 1Tops 8GB RAM'),
-  ('renesas_rcar_v4h',          'Renesas RCar V4H')
+    ('ti_sitara',                 'TI Sitara'),
+    ('ti_tda4_entry',             'TI TDA4 Entry'),
+    ('ti_tda4_low',               'TI TDA4 Low'),
+    ('ti_tda4_mid',               'TI TDA4 Mid'),
+    ('ti_tda4_high',              'TI TDA4 High'),
+    ('amd_zynq_ultrascale',       'AMD Zynq Ultrascale'),
+    ('qcm_sa81xx',                'QCM SA81xx'),
+    ('qcm_sa86xx',                'QCM SA86xx'),
+    ('renesas_v4h',               'Renesas V4H'),
+    ('fdm_occula_8_0',            'FDM Occula 8.0'),
+    ('fdm_occula_8_2',            'FDM Occula 8.2'),
+    ('fdm_occula_8_3',            'FDM Occula 8.3'),
+    ('ov_oax4600',                'OV OAX4600'),
+    ('ambarella_cv25',            'Ambarella CV25'),
+    ('x86_64',                    'x86/64'),
+    ('edme',                      'e-DME'),
+    ('ti_sitara_2tops_2gb_ram',   'TI Sitara 2 Tops 2GB RAM'),
+    ('ti_sitara_1tops_8gb_ram',   'TI Sitara 1 Tops 8GB RAM'),
+    ('renesas_rcar_v4h',          'Renesas RCar V4H')
 ] %}
 
-<!-- DB Variable                UI Text-->
+<!-- DB Variable                  UI Text-->
 {% set operating_systems = [
-    ('linux',                  'Linux'),
-    ('qnx',                    'QNX'),
-    ('pike_os',                'Pike OS'),
-    ('android',                'Android'),
-    ('library',                'Library'),
-    ('ghs_integrity',          'GHS Integrity'),
-    ('windows',                'Windows'),
-    ('peta_linux',             'PetaLinux')
+    ('linux',                     'Linux'),
+    ('qnx',                       'QNX'),
+    ('pike_os',                   'Pike OS'),
+    ('android',                   'Android'),
+    ('library',                   'Library'),
+    ('ghs_integrity',             'GHS Integrity'),
+    ('windows',                   'Windows'),
+    ('peta_linux',                'PetaLinux')
 ] %}
 
+<!-- DB Variable                  UI Text-->
 {% set camera_locations = [
-    ("frontal", "Frontal"),
-    ("offset_high", "Offset High"),
-    ("offset_low", "Offset Low"),
-    ("overhead", "Overhead")
+    ('frontal',                   'Frontal'),
+    ('offset_high',               'Offset High'),
+    ('offset_low',                'Offset Low'),
+    ('overhead',                  'Overhead')
 ] %}
 
+<!-- DB Variable                  UI Text-->
+{% set illumination_types = [
+    ('bright_pupil',              'Bright Pupil'),
+    ('dark_pupil',                'Dark Pupil'),
+    ('smart_bright_pupil',        'Smart Bright Pupil'),
+] %}
+
+<!-- DB Variable                  UI Text-->
+{% set lens_type = [
+    ('nfov',                      'Narrow FOV'),
+    ('wfov',                      'Wide FOV')
+] %}
+
+<!-- DB Variable                  UI Text-->
 {% set camera_settings = [
-    ("fusion", "Fusion"),
-    ("camera_rotation", "Camera Rotation"),
-    ("oms_dms", "OMS/DMS/Both"),
-    ("oms_iq_low", "OMSIQ-LOW"),
-    ("oms_iq_mid", "OMSIQ-MID"),
-    ("oms_iq_high", "OMSIQ-HIGH"),
-    ("bright_pupil", "Bright Pupil"),
-    ("dark_pupil", "Dark Pupil"),
-    ("smart_bright_pupil", "Smart Bright Pupil"),
-    ("nfov", "NFOV"),
-    ("wfov", "WFOV"),
-    ("seating_positions", "Seating Positions")
+    ('fusion',                    'Fusion'),
+    ('camera_rotation',           'Camera Rotation'),
+    ('oms_dms',                   'OMS/DMS/Both'),
+    ('oms_iq_low',                'OMSIQ-LOW'),
+    ('oms_iq_mid',                'OMSIQ-MID'),
+    ('oms_iq_high',               'OMSIQ-HIGH'),
+    ('nfov',                      'NFOV'),
+    ('wfov',                      'WFOV')
 ] %}

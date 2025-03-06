@@ -52,10 +52,10 @@ th.sortable {
     color: #343a40;
 }
 
-.col {
-    min-width: 120px;
-    max-width: 200px;
-    flex: 1;
+.card .col {
+    min-width: 280px;
+    max-width: 280px;
+    height: 100px;
     text-align: center;
 }
 

@@ -25,14 +25,18 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="static\" />
+    <Folder Include="static\js\" />
+    <Folder Include="static\styles\" />
     <Folder Include="templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="project_configurations.db" />
     <Content Include="static\cabin.png" />
     <Content Include="static\camera.png" />
     <Content Include="static\human.png" />
+    <Content Include="static\js\scripts.js" />
     <Content Include="static\seating_positions.png" />
-    <Content Include="static\styles.css" />
+    <Content Include="static\styles\styles.css" />
     <Content Include="templates\add.html" />
     <Content Include="templates\index.html" />
     <Content Include="templates\settings.html" />

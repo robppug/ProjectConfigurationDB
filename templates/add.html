@@ -1,124 +1,181 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Project Configuration</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Project Configuration</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body class="bg-light">
-    {% import '_macros.html' as macro %}
-    {% import '_options.html' as options %}
-    <div class="container py-4">
-        <h1 class="h3 mb-4 text-primary">Add Project Configuration</h1>
-        {% include '_messages.html' %}
-        <form method="POST" novalidate>
+  {% import '_macros.html' as macro %}
+  {% import '_options.html' as options %}
+  <div class="container py-4">
+    <h1 class="h3 mb-4 text-primary">Add Project Configuration</h1>
+    {% include '_messages.html' %}
+    <form method="POST" novalidate>
+      <!-- Basic Information -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Basic Information</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label">Project Name:</label>
             <input type="text" class="form-control" name="project" required maxlength="100">
-            <!-- Basic Information -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Basic Information</div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="form-label">Project Name:</label>
-                        <input type="text" class="form-control {% if form.project.errors %}is-invalid{% endif %}" name="project">
-                        {% if form.project.errors %}
-                        <div class="invalid-feedback">
-                            {{ form.project.errors[0] }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Project Stage:</label>
-                        {{ macro.render_dropdown('project_stage', options.project_stages, '', true, "", 'class="form-select"') }}
-                    </div>
-                    <!-- Optionally remove Last Updated since it may be auto-set -->
-                    <div class="mb-3">
-                        <label class="form-label">Last Updated:</label>
-                        <input type="date" class="form-control" name="last_updated">
-                    </div>
-                </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Project Stage:</label>
+            {{ macro.render_dropdown('project_stage', options.project_stages, '', true, "", 'class="form-select"') }}
+          </div>
+          <!-- Optionally remove Last Updated since it may be auto-set -->
+          <div class="mb-3">
+            <label class="form-label">Last Updated:</label>
+            <input type="date" class="form-control" name="last_updated">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description:</label>
+            <textarea class="form-control" name="description" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Cognitive Features -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Cognitive Features</div>
+        <div class="card-body">
+          <div class="row">
+            {% for field, label in options.cognitive_del %}
+            <div class="col-md-4 mb-3">
+              {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
             </div>
-
-            <!-- Cognitive Features -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Cognitive Features</div>
-                <div class="card-body">
-                    <div class="row">
-                        {% for field, label in options.cognitive_del %}
-                        <div class="col-md-4 mb-3">
-                            {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
-                        </div>
-                        {% endfor %}
-                        {% for field, label in options.cognitive_dil %}
-                        <div class="col-md-4 mb-3">
-                            {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+            {% endfor %}
+            {% for field, label in options.cognitive_dil %}
+            <div class="col-md-4 mb-3">
+              {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
             </div>
-
-            <!-- Visual Recognition Features -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Visual Recognition Features</div>
-                <div class="card-body">
-                    <div class="row">
-                        {% for field, label in options.visual_activity %}
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">{{ label }}:</label>
-                            <input type="text" class="form-control" name="{{ field }}">
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Visual Recognition Features -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Visual Recognition Features</div>
+        <div class="card-body">
+          <div class="row">
+            {% for field, label in options.visual_activity %}
+            <div class="col-md-4 mb-3">
+              <label class="form-label">{{ label }}:</label>
+              <input type="text" class="form-control" name="{{ field }}">
             </div>
-
-            <!-- Standards Compliance -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Standards Compliance</div>
-                <div class="card-body">
-                    <div class="row">
-                        {% for name, label, options in options.standards_compliance %}
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">{{ label }}:</label>
-                            {{ macro.render_dropdown(name, options, '', true, "", 'class="form-select"') }}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Standards Compliance -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Standards Compliance</div>
+        <div class="card-body">
+          <div class="row">
+            {% for name, label, dropdown in options.standards_compliance %}
+            <div class="col-md-4 mb-3">
+              <label class="form-label">{{ label }}:</label>
+              {{ macro.render_dropdown(name, dropdown, '', true, "", 'class="form-select"') }}
             </div>
-
-            <!-- Regulatory Compliance -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Regulatory Compliance</div>
-                <div class="card-body">
-                    <div class="row">
-                        {% for field, label in options.regulations %}
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">{{ label }}:</label>
-                            <input type="text" class="form-control" name="{{ field }}">
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Regulatory Compliance -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Regulatory Compliance</div>
+        <div class="card-body">
+          <div class="row">
+            {% for field, label in options.regulations %}
+            <div class="col-md-4 mb-3">
+              <label class="form-label">{{ label }}:</label>
+              <input type="text" class="form-control" name="{{ field }}">
             </div>
-
-            <!-- Hardware/Platform -->
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header">Hardware/Platform</div>
-                <div class="card-body">
-                    {{ macro.render_multiselect('hardware_platform', options.hardware) }}
-                </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Packaging & Camera Configuration -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Packaging &amp; Camera Configuration</div>
+        <div class="card-body">
+          <!-- OMS/DMS Selection -->
+          <div class="mb-3">
+            <label class="form-label">OMS/DMS Selection:</label>
+            <select name="oms_dms" class="form-select">
+              <option value="">Select</option>
+              <option value="OMS">OMS</option>
+              <option value="DMS">DMS</option>
+              <option value="BOTH">BOTH</option>
+            </select>
+          </div>
+          <!-- Camera Settings Table -->
+          <div class="table-responsive mb-3">
+            <table class="table table-bordered table-hover align-middle text-center" style="table-layout: auto; width: auto;">
+              <thead class="table-light">
+                <tr>
+                  <th class="text-start">Configuration</th>
+                  {% for field, label in options.camera_settings %}
+                    {% if field != 'oms_dms' %}
+                      <th class="text-center small px-2" style="writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; vertical-align: middle; min-width: 50px;">
+                        {{ label }}
+                      </th>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="fw-bold text-start">Required</td>
+                  {% for field, label in options.camera_settings %}
+                    {% if field != 'oms_dms' %}
+                      <td class="text-center">
+                        <input type="checkbox" name="{{ field }}" value="true">
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Seating Positions -->
+          <div class="mb-3">
+            <label class="form-label">Seating Positions (comma separated):</label>
+            <input type="text" class="form-control" name="seating_positions">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hardware/Platform -->
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header">Hardware/Platform</div>
+        <div class="card-body">
+          <div class="row">
+            {% for field, label in options.hardware %}
+            <div class="col-md-3 mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="{{ field }}" id="{{ field }}">
+                <label class="form-check-label" for="{{ field }}">{{ label }}</label>
+              </div>
             </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Add Project</button>
-                <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Add Project</button>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
