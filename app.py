@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+import sys
+import os
+import json
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import os, json
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
@@ -12,6 +14,32 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(basedir, 'proj
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+# -------------------------
+# Authentication Functions
+# -------------------------
+@app.before_request
+def require_login():
+    # Allow access to login and static files without authentication
+    if request.endpoint not in ('login', 'static') and 'logged_in' not in session:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Replace 'YOUR_PASSWORD' with your actual password
+        if request.form.get('password') == 'prjdb1234':
+            session['logged_in'] = True
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid password, please try again.', 'error')
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('login'))
 
 # ===================
 # Models
@@ -278,9 +306,11 @@ def add():
             return redirect(url_for('add'))
 
         new_project = ProjectConfiguration(project=project_name)
-        populate_fields(new_project, ["project_stage", "last_updated", "description"])
+        project_fields = {c.name for c in ProjectConfiguration.__table__.columns if c.name not in ["id", "project"]}
+        populate_fields(new_project, list(project_fields))
         new_feature_needs = ProjectFeatureNeeds(project=project_name)
-        populate_fields(new_feature_needs, ["cog_del_inattentive", "vis_smoke", "vis_phone"])
+        feature_fields = {c.name for c in ProjectFeatureNeeds.__table__.columns if c.name != "project"}
+        populate_fields(new_feature_needs, list(feature_fields))
 
         try:
             db.session.add(new_project)

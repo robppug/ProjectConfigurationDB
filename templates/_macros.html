@@ -6,7 +6,9 @@
     {% if include_default %}
     <option value="">{{ default_label }}</option>
     {% endif %}
-    {% for value, label in options %}
+    {% for option in options %}
+    {% set value = option[0] %}
+    {% set label = option[1] %}
     <option value="{{ value }}" {% if value==selected_value %}selected{% endif %}>{{ label }}</option>
     {% endfor %}
 </select>

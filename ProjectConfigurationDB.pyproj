@@ -36,9 +36,11 @@
     <Content Include="static\human.png" />
     <Content Include="static\js\scripts.js" />
     <Content Include="static\seating_positions.png" />
+    <Content Include="static\seeing_machines_logo.png" />
     <Content Include="static\styles\styles.css" />
     <Content Include="templates\add.html" />
     <Content Include="templates\index.html" />
+    <Content Include="templates\login.html" />
     <Content Include="templates\settings.html" />
     <Content Include="templates\_options.html" />
     <Content Include="templates\_macros.html" />

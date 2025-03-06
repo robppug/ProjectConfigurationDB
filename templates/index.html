@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
 </head>
 <body class="bg-light">
+<img src="{{ url_for('static', filename='seeing_machines_logo.png') }}" alt="Seeing Machines" class="logo" style="position: absolute; top: 40px; right: 40px; max-width: 350px;">
     {% import '_options.html' as options %}
     {% import '_macros.html' as macro %}
     <div class="container-fluid px-5 py-4" style="max-width: 95vw;">
@@ -144,7 +145,7 @@
                                                             <div class="col-md-12">
                                                                 <div class="mb-3">
                                                                     <label class="fw-bold">Description:</label>
-                                                                    <textarea name="description" class="form-control form-control-sm" rows="4">{{ project.description or '' }}</textarea>
+                                                                    <textarea name="description" class="form-control form-control-sm" style="min-width: 800px;" rows="4">{{ project.description or '' }}</textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -599,6 +600,7 @@
 
                                                                     <input type="checkbox" id="camera_{{ camera_id }}" name="camera_{{ camera_id }}" class="d-none"
                                                                            {% if project[camera_id]==True %}checked{% endif %}>
+
                                                                     <div id="transparent_box_{{ camera_id }}" class="transparent-box"></div>
                                                                 </div>
                                                                 {% endfor %}

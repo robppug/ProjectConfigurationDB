@@ -1,181 +1,323 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Project Configuration</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Project Configuration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styles.css') }}">
 </head>
 <body class="bg-light">
-  {% import '_macros.html' as macro %}
-  {% import '_options.html' as options %}
-  <div class="container py-4">
-    <h1 class="h3 mb-4 text-primary">Add Project Configuration</h1>
-    {% include '_messages.html' %}
-    <form method="POST" novalidate>
-      <!-- Basic Information -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Basic Information</div>
-        <div class="card-body">
-          <div class="mb-3">
-            <label class="form-label">Project Name:</label>
-            <input type="text" class="form-control" name="project" required maxlength="100">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Project Stage:</label>
-            {{ macro.render_dropdown('project_stage', options.project_stages, '', true, "", 'class="form-select"') }}
-          </div>
-          <!-- Optionally remove Last Updated since it may be auto-set -->
-          <div class="mb-3">
-            <label class="form-label">Last Updated:</label>
-            <input type="date" class="form-control" name="last_updated">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Description:</label>
-            <textarea class="form-control" name="description" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Cognitive Features -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Cognitive Features</div>
-        <div class="card-body">
-          <div class="row">
-            {% for field, label in options.cognitive_del %}
-            <div class="col-md-4 mb-3">
-              {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
+    {% import '_macros.html' as macro %}
+    {% import '_options.html' as options %}
+    <div class="container py-4">
+        <h1 class="h3 mb-4 text-primary">Add Project Configuration</h1>
+
+        <button id="showLogsButton" class="btn btn-secondary" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">Logs</button>
+
+        <div id="logPanel" style="position: fixed; bottom: 80px; right: 20px; width: 800px; height: 250px;
+                                  background: rgba(0, 0, 0, 0.45); color: white; font-size: 12px;
+                                  padding: 10px; overflow-y: auto; display: none; z-index: 10000;
+                                  border-radius: 5px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                Logs
+                <button onclick="clearLogs()" class="btn btn-sm btn-danger">Clear</button>
             </div>
-            {% endfor %}
-            {% for field, label in options.cognitive_dil %}
-            <div class="col-md-4 mb-3">
-              {{ macro.render_dropdown(field, options.feature, '', true, "", 'class="form-select"') }}
+            <div id="logContent" style="max-height: 200px; overflow-y: auto;"></div>
+        </div>
+
+        {% include '_messages.html' %}
+        <form method="POST" novalidate>
+
+            <!-- Basic Information -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Basic Information</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Project Name:</label>
+                        <input type="text" class="form-control" name="project" required maxlength="100">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Project Stage:</label>
+                        {{ macro.render_dropdown('project_stage', options.project_stages, '', true, "", 'class="form-select"') }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Updated:</label>
+                        <input type="date" class="form-control" name="last_updated">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description:</label>
+                        <textarea class="form-control" name="description" style="min-width: 800px;" rows="3"></textarea>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      
-      <!-- Visual Recognition Features -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Visual Recognition Features</div>
-        <div class="card-body">
-          <div class="row">
-            {% for field, label in options.visual_activity %}
-            <div class="col-md-4 mb-3">
-              <label class="form-label">{{ label }}:</label>
-              <input type="text" class="form-control" name="{{ field }}">
+
+            <!-- Standards Compliance -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Standards Compliance</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card p-3 text-center shadow-sm">
+                                <small class="fw-bold d-block mb-2">ISO 26262 LEVEL</small>
+                                {{ macro.render_dropdown('iso26262_level', options.iso26262_level_dropdown, 'N/A', false, '', 'class="form-select"') }}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card p-3 text-center shadow-sm">
+                                <small class="fw-bold d-block mb-2">ISO 26262 VERSION</small>
+                                {{ macro.render_dropdown('iso26262_version', options.iso26262_version_dropdown, 'N/A', false, '', 'class="form-select"') }}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card p-3 text-center shadow-sm">
+                                <small class="fw-bold d-block mb-2">ASPICE LEVEL</small>
+                                {{ macro.render_dropdown('aspice_level', options.aspice_level_dropdown, 'N/A', false, '', 'class="form-select"') }}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card p-3 text-center shadow-sm">
+                                <small class="fw-bold d-block mb-2">ASPICE VERSION</small>
+                                {{ macro.render_dropdown('aspice_version', options.aspice_version_dropdown, 'N/A', false, '', 'class="form-select"') }}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card p-3 text-center shadow-sm">
+                                <small class="fw-bold d-block mb-2">ISO 21434 VERSION</small>
+                                {{ macro.render_dropdown('iso21434', options.iso21434_dropdown, 'N/A', false, '', 'class="form-select"') }}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card p-3 text-center shadow-sm">
+                                <small class="fw-bold d-block mb-2">ISO 21448 VERSION</small>
+                                {{ macro.render_dropdown('iso21448', options.iso21448_dropdown, 'N/A', false, '', 'class="form-select"') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      
-      <!-- Standards Compliance -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Standards Compliance</div>
-        <div class="card-body">
-          <div class="row">
-            {% for name, label, dropdown in options.standards_compliance %}
-            <div class="col-md-4 mb-3">
-              <label class="form-label">{{ label }}:</label>
-              {{ macro.render_dropdown(name, dropdown, '', true, "", 'class="form-select"') }}
+
+            <!-- Regulatory Compliance -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Regulatory Compliance</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field, label in options.regulations %}
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="{{ field }}" value="true">
+                                <label class="form-check-label">{{ label }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      
-      <!-- Regulatory Compliance -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Regulatory Compliance</div>
-        <div class="card-body">
-          <div class="row">
-            {% for field, label in options.regulations %}
-            <div class="col-md-4 mb-3">
-              <label class="form-label">{{ label }}:</label>
-              <input type="text" class="form-control" name="{{ field }}">
+
+            <!-- Camera/Packaging & Image Configuration -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Camera/Packaging &amp; Image Configuration</div>
+                <div class="card-body">
+                    <!-- OMS/DMS Selection -->
+                    <div class="col">
+                        <div class="card p-3 text-center shadow-sm">
+                            <small class="fw-bold d-block mb-2">OMS/DMS Selection</small>
+                            {{ macro.render_dropdown('oms_dms', options.engine_type, 'N/A', false, '', 'class="form-select"') }}
+                        </div>
+                    </div>
+                    <!-- Camera Settings Table -->
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Configuration</th>
+                                    {% for field, label in options.camera_settings %}
+                                    {% if field != 'oms_dms' %}
+                                    <th style="min-width: 50px;">{{ label }}</th>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-bold text-start">Required</td>
+                                    {% for field, label in options.camera_settings %}
+                                    {% if field != 'oms_dms' %}
+                                    <td>
+                                        <input type="checkbox" name="{{ field }}" value="true">
+                                    </td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Additional Image Configuration -->
+                    <div class="row">
+                        {% set image_configs = [
+                        ('frontal', 'Frontal'),
+                        ('offset_high_rvm', 'Offset High (RVM)'),
+                        ('offset_low_cc', 'Offset Low (CC)'),
+                        ('offset_low_ic', 'Offset Low (IC)'),
+                        ('offset_high_ohc', 'Offset High (OHC)')
+                        ] %}
+                        {% for field, label in image_configs %}
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="{{ field }}" value="true">
+                                <label class="form-check-label">{{ label }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      
-      <!-- Packaging & Camera Configuration -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Packaging &amp; Camera Configuration</div>
-        <div class="card-body">
-          <!-- OMS/DMS Selection -->
-          <div class="mb-3">
-            <label class="form-label">OMS/DMS Selection:</label>
-            <select name="oms_dms" class="form-select">
-              <option value="">Select</option>
-              <option value="OMS">OMS</option>
-              <option value="DMS">DMS</option>
-              <option value="BOTH">BOTH</option>
-            </select>
-          </div>
-          <!-- Camera Settings Table -->
-          <div class="table-responsive mb-3">
-            <table class="table table-bordered table-hover align-middle text-center" style="table-layout: auto; width: auto;">
-              <thead class="table-light">
-                <tr>
-                  <th class="text-start">Configuration</th>
-                  {% for field, label in options.camera_settings %}
-                    {% if field != 'oms_dms' %}
-                      <th class="text-center small px-2" style="writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; vertical-align: middle; min-width: 50px;">
-                        {{ label }}
-                      </th>
-                    {% endif %}
-                  {% endfor %}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="fw-bold text-start">Required</td>
-                  {% for field, label in options.camera_settings %}
-                    {% if field != 'oms_dms' %}
-                      <td class="text-center">
-                        <input type="checkbox" name="{{ field }}" value="true">
-                      </td>
-                    {% endif %}
-                  {% endfor %}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <!-- Seating Positions -->
-          <div class="mb-3">
-            <label class="form-label">Seating Positions (comma separated):</label>
-            <input type="text" class="form-control" name="seating_positions">
-          </div>
-        </div>
-      </div>
-      
-      <!-- Hardware/Platform -->
-      <div class="card mb-4 shadow-sm">
-        <div class="card-header">Hardware/Platform</div>
-        <div class="card-body">
-          <div class="row">
-            {% for field, label in options.hardware %}
-            <div class="col-md-3 mb-3">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="{{ field }}" id="{{ field }}">
-                <label class="form-check-label" for="{{ field }}">{{ label }}</label>
-              </div>
+
+            <!-- Seating Positions -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Seating Positions</div>
+                <div class="card-body">
+                    {% set seating_positions = [
+                    ('seat_driver', 'Driver'),
+                    ('seat_2nd_row_drv', '2nd Row Driver'),
+                    ('seat_mid', 'Mid'),
+                    ('seat_2nd_row_mid', '2nd Row Mid'),
+                    ('seat_pass', 'Passenger'),
+                    ('seat_2nd_row_pass', '2nd Row Passenger'),
+                    ('seat_3rd_row_mid', '3rd Row Mid'),
+                    ('seat_3rd_row_drv', '3rd Row Driver'),
+                    ('seat_3rd_row_pass', '3rd Row Passenger')
+                    ] %}
+                    <div class="row">
+                        {% for field, label in seating_positions %}
+                        <div class="col-md-4 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="{{ field }}" value="true">
+                                <label class="form-check-label">{{ label }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div>
-      
-      <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Add Project</button>
-        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
-      </div>
-    </form>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+            <!-- Hardware/Platform -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Hardware/Platform</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field, label in options.hardware %}
+                        <div class="col-md-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="{{ field }}" id="{{ field }}">
+                                <label class="form-check-label" for="{{ field }}">{{ label }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operating Systems -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Operating Systems</div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field, label in options.operating_systems %}
+                        <div class="col-md-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="{{ field }}" id="{{ field }}">
+                                <label class="form-check-label" for="{{ field }}">{{ label }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cognitive Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Cognitive Features</div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for field, label in options.cognitive_del %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                        {% for field, label in options.cognitive_dil %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Recognition Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Visual Recognition Features</div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for field, label in options.visual_activity %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                        {% for field, label in options.visual_mouth %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                        {% for field, label in options.visual_fod %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                        {% for field, label in options.visual_sod %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                        {% for field, label in options.visual_id %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Core Features</div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for field, label in options.core_features %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Utility Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Utility Features</div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for field, label in options.utility_features %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speculative Features -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header">Speculative Features</div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
+                        {% for field, label in options.speculative_features %}
+                        {{ macro.render_feature(field, label, options.feature) }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Add Project</button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

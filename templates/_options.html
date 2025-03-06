@@ -116,6 +116,53 @@
     ('core_ms',                   'core_ms')
 ] %}
 
+<!-- DB Variable                  UI Text-->
+{% set speculative_features = [
+    ('COG_DIL_INTOX',             'Cognitive Intoxication'),
+    ('COG_ES',                    'Cognitive Emergency Stop'),
+    ('COG_OVERLOAD',              'Cognitive Overload'),
+    ('VIS_MOUTH_SPEECH',          'Mouth Speech Detection'),
+    ('VIS_SOD_HEALTH_PREG',       'Health Pregnancy Detection'),
+    ('VIS_CLOTHING',              'Clothing Detection'),
+    ('VIS_MOUTH_EATING_DRINKING', 'Eating/Drinking Detection'),
+    ('SFC109',                    'Speculative Feature 109'),
+    ('VIS_CABIN_OBJECT',          'Cabin Object Detection'),
+    ('VIS_CABIN_STATE',           'Cabin State Recognition'),
+    ('VIS_SPOOF_NOVELTY',         'Spoofing Novelty Detection'),
+    ('VIS_SOD_PETS',              'Seat Occupancy for Pets'),
+    ('VIS_SOD_CHILDSEAT_TYPE',    'Child Seat Type Detection'),
+    ('SFC115',                    'Speculative Feature 115'),
+    ('SFC116',                    'Speculative Feature 116'),
+    ('SFC117',                    'Speculative Feature 117'),
+    ('VIS_SOD_HEALTH_HR',         'Heart Rate Detection'),
+    ('SFC120',                    'Speculative Feature 120'),
+    ('SFC121',                    'Speculative Feature 121'),
+    ('SFC122',                    'Speculative Feature 122'),
+    ('SFC123',                    'Speculative Feature 123'),
+    ('SFC124',                    'Speculative Feature 124'),
+    ('SFC125',                    'Speculative Feature 125'),
+    ('SFC126',                    'Speculative Feature 126'),
+    ('SFC127',                    'Speculative Feature 127'),
+    ('SFC128',                    'Speculative Feature 128'),
+    ('SFC129',                    'Speculative Feature 129'),
+    ('SFC130',                    'Speculative Feature 130'),
+    ('SFC131',                    'Speculative Feature 131'),
+    ('SFC132',                    'Speculative Feature 132'),
+    ('SFC133',                    'Speculative Feature 133'),
+    ('SFC134',                    'Speculative Feature 134'),
+    ('SFC135',                    'Speculative Feature 135'),
+    ('SFC136',                    'Speculative Feature 136'),
+    ('SFC137',                    'Speculative Feature 137'),
+    ('SFC138',                    'Speculative Feature 138'),
+    ('SFC139',                    'Speculative Feature 139'),
+    ('SFC140',                    'Speculative Feature 140'),
+    ('SFC141',                    'Speculative Feature 141'),
+    ('SFC142',                    'Speculative Feature 142'),
+    ('SFC143',                    'Speculative Feature 143'),
+    ('SFC144',                    'Speculative Feature 144'),
+    ('SFC145',                    'Speculative Feature 145')
+] %}
+
 
 <!-- DB Variable                  UI Text                       Selection Options-->
 {% set standards_compliance = [
@@ -219,6 +266,13 @@
     ('ghs_integrity',             'GHS Integrity'),
     ('windows',                   'Windows'),
     ('peta_linux',                'PetaLinux')
+] %}
+
+<!-- DB Variable                  UI Text-->
+{% set engine_type = [
+    ('dms',                       'DMS'),
+    ('oms',                       'OMS'),
+    ('both',                      'Both'),
 ] %}
 
 <!-- DB Variable                  UI Text-->
